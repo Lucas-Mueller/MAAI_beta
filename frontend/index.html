@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Assessment System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 CV Assessment System</h1>
+            <p>Upload job descriptions and CVs for AI-powered candidate evaluation</p>
+        </header>
+
+        <main>
+            <!-- Step 1: Upload Job Description -->
+            <section class="upload-section" id="step1">
+                <h2>📄 Step 1: Upload Job Description</h2>
+                <div class="upload-area" id="jobUpload">
+                    <input type="file" id="jobFile" accept=".pdf" style="display: none;">
+                    <div class="upload-content">
+                        <span class="upload-icon">📁</span>
+                        <p>Click to upload job description PDF</p>
+                        <small>Only PDF files are accepted</small>
+                    </div>
+                </div>
+                <div id="jobStatus" class="status-message"></div>
+            </section>
+
+            <!-- Step 2: Upload CVs -->
+            <section class="upload-section" id="step2" style="display: none;">
+                <h2>👥 Step 2: Upload Candidate CVs</h2>
+                <div class="upload-area" id="cvUpload">
+                    <input type="file" id="cvFiles" accept=".pdf" multiple style="display: none;">
+                    <div class="upload-content">
+                        <span class="upload-icon">📋</span>
+                        <p>Click to upload CV PDFs</p>
+                        <small>Multiple files can be selected</small>
+                    </div>
+                </div>
+                <div id="cvStatus" class="status-message"></div>
+                <div id="cvList" class="file-list"></div>
+            </section>
+
+            <!-- Step 3: Start Evaluation -->
+            <section class="action-section" id="step3" style="display: none;">
+                <h2>🚀 Step 3: Start Evaluation</h2>
+                <button id="startEvaluation" class="primary-btn">Start AI Evaluation</button>
+                <div id="evaluationStatus" class="status-message"></div>
+                <div id="evaluationProgress" class="progress-container" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText">Evaluating candidates...</p>
+                </div>
+            </section>
+
+            <!-- Step 4: Results -->
+            <section class="results-section" id="step4" style="display: none;">
+                <h2>📊 Evaluation Results</h2>
+                <div id="resultsContainer"></div>
+            </section>
+        </main>
+
+        <!-- Job History -->
+        <aside class="sidebar">
+            <h3>📚 Previous Jobs</h3>
+            <div id="jobHistory" class="job-history"></div>
+        </aside>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
