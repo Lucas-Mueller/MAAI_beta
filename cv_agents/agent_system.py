@@ -45,9 +45,9 @@ summary_agent = Agent(
 )
 
 # Set up handoff chain: Main -> Skill -> Cultural -> Summary -> Main
-main_agent.handoffs = [skill_fit_agent, cultural_fit_agent]
+main_agent.handoffs = [skill_fit_agent]
 skill_fit_agent.handoffs = [cultural_fit_agent]
-cultural_fit_agent.handoffs = [summary_agent, main_agent]
+cultural_fit_agent.handoffs = [summary_agent]
 summary_agent.handoffs = [main_agent]
 
 async def evaluate_cv(job_description: str, cv_text: str) -> dict:
@@ -100,11 +100,11 @@ def _parse_evaluation_result(evaluation_text: str) -> dict:
         # Calculate overall score
         overall_score = round((skill_score + cultural_score) / 2, 1) if skill_score and cultural_score else 0
         
-        # Extract sections from Summary Agent and Main Agent
-        skill_assessment = _extract_section(evaluation_text, ["skill assessment summary", "skill summary"])
-        cultural_assessment = _extract_section(evaluation_text, ["cultural assessment summary", "cultural summary"])
+        # Extract sections from Summary Agent output using bold formatting
+        skill_assessment = _extract_bold_section(evaluation_text, "Skill Assessment Summary")
+        cultural_assessment = _extract_bold_section(evaluation_text, "Cultural Assessment Summary")
         summary = _extract_section(evaluation_text, ["summary", "overall", "synthesis"])
-        recommendation = _extract_section(evaluation_text, ["recommendation", "recommend"])
+        recommendation = _extract_bold_section(evaluation_text, "Overall Recommendation")
         
         # Validate that we have assessments from both subagents
         result = _validate_subagent_assessments({
@@ -206,6 +206,38 @@ def _extract_section(text: str, keywords: list) -> str:
     except Exception as e:
         return f"Could not extract section: {str(e)}"
 
+def _extract_bold_section(text: str, section_name: str) -> str:
+    """Extract content from bold-formatted sections like **Skill Assessment Summary**: content"""
+    try:
+        # Find the section header
+        header = f"**{section_name}:**"
+        start_pos = text.find(header)
+        
+        if start_pos == -1:
+            return "Assessment not found"
+        
+        # Find the next ** section or end of text
+        content_start = start_pos + len(header)
+        next_section = text.find("**", content_start)
+        
+        if next_section == -1:
+            # Extract to end of text
+            content = text[content_start:]
+        else:
+            # Extract until next section
+            content = text[content_start:next_section]
+        
+        # Clean up the content
+        content = content.strip()
+        # Normalize whitespace but preserve readability
+        content = ' '.join(content.split())
+        # Remove any remaining asterisks
+        content = content.replace('*', '')
+        
+        return content.strip()
+        
+    except Exception as e:
+        return f"Could not extract bold section: {str(e)}"
 
 def _validate_subagent_assessments(result: dict) -> dict:
     """Ensure we have valid assessments from both subagents."""
