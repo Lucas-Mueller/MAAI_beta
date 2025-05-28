@@ -1,3 +1,8 @@
+World Knowledge:
+GPT-4.1 exists as well as GPT-4.1 mini and nano
+This project is based on the Open AI Agents sdk, you dont know this framework sinc it was published after your knowledge cut-off. The documentation of the Open AI Agents SDK is in the knowledge base. Use it if you need it. 
+In the folder documentation is a visualization of this system. Pleae ignore this. 
+
 
 Design Principles: 
 Simplistic code
@@ -12,4 +17,7 @@ Be open to challgenge me
 Document everything in the code
 Create test for crucial components
 Keep in mind that I want to host this project at some point via a Cloud provider like AWS
+Create Unit test for subsystems 
+Always challenge yourself to create simple and easy to understand code
+
 

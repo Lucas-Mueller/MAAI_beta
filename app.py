@@ -14,8 +14,8 @@ import uuid
 import os
 
 from backend.pdf_processor import PDFProcessor
+from backend.database import Database
 from cv_agents import evaluate_cv
-from database import Database
 
 app = FastAPI(title="CV Assessment System", version="1.0.0")
 

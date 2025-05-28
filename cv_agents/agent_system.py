@@ -279,3 +279,4 @@ def _validate_subagent_assessments(result: dict) -> dict:
         result["summary"] = f"Evaluation summary: Skill fit {result['skill_score']}/10, Cultural fit {result['cultural_score']}/10. See individual assessments for details."
     
     return result
+
