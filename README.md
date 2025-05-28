@@ -76,6 +76,7 @@ MAAI_beta/
 
 ### Environment Variables
 - `OPENAI_API_KEY`: Your OpenAI API key (required)
+-  `BRAVE_API_KEY`: Your BRAVE API key (required for MCP tool use of BRAVE, free option available)
 
 ### Agent Settings
 Edit `agents_configs.py` to customize:
