@@ -93,9 +93,9 @@ async def evaluate_cv(job_description: str, cv_text: str) -> dict:
 def _parse_evaluation_result(evaluation_text: str) -> dict:
     """Parse the agent's evaluation output to extract structured data."""
     try:
-        # Extract scores using regex patterns
-        skill_score = _extract_score(evaluation_text, ["skill", "technical"])
-        cultural_score = _extract_score(evaluation_text, ["cultural", "culture", "fit"])
+        # Extract scores from Summary Agent's specific format
+        skill_score = _extract_summary_score(evaluation_text, "Skill Fit Score")
+        cultural_score = _extract_summary_score(evaluation_text, "Cultural Fit Score")
         
         # Calculate overall score
         overall_score = round((skill_score + cultural_score) / 2, 1) if skill_score and cultural_score else 0
@@ -239,20 +239,37 @@ def _extract_bold_section(text: str, section_name: str) -> str:
     except Exception as e:
         return f"Could not extract bold section: {str(e)}"
 
+def _extract_summary_score(text: str, score_label: str) -> float:
+    """Extract scores from Summary Agent format like 'Skill Fit Score: 8.5/10'"""
+    try:
+        import re
+        
+        # Look for patterns like "Skill Fit Score: 8.5/10" or "Cultural Fit Score: 9/10"
+        pattern = rf'{re.escape(score_label)}:\s*(\d+(?:\.\d+)?)/10'
+        match = re.search(pattern, text, re.IGNORECASE)
+        
+        if match:
+            score = float(match.group(1))
+            return min(10, max(0, score))  # Clamp between 0-10
+        
+        # Fallback to original extraction method
+        return _extract_score(text, [score_label.lower().split()[0]])
+        
+    except Exception:
+        return 5.0
+
 def _validate_subagent_assessments(result: dict) -> dict:
     """Ensure we have valid assessments from both subagents."""
     
     # Check if skill assessment is missing or too generic
     if (result["skill_assessment"] == "Assessment not found" or 
-        len(result["skill_assessment"]) < 50 or
-        result["skill_score"] == 5.0):
+        len(result["skill_assessment"]) < 50):
         result["skill_assessment"] = f"Skill assessment incomplete. Score: {result['skill_score']}/10. Manual review recommended for technical qualifications."
         result["error"] = True
     
     # Check if cultural assessment is missing or too generic  
     if (result["cultural_assessment"] == "Assessment not found" or 
-        len(result["cultural_assessment"]) < 50 or
-        result["cultural_score"] == 5.0):
+        len(result["cultural_assessment"]) < 50):
         result["cultural_assessment"] = f"Cultural assessment incomplete. Score: {result['cultural_score']}/10. Manual review recommended for cultural fit."
         result["error"] = True
     
