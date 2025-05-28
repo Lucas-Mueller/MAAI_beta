@@ -14,8 +14,8 @@ import uuid
 import os
 
 from backend.pdf_processor import PDFProcessor
-from backend.cv_evaluator import CVEvaluator
 from backend.database import Database
+from cv_agents import evaluate_cv
 
 app = FastAPI(title="CV Assessment System", version="1.0.0")
 
@@ -24,7 +24,6 @@ app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
 # Initialize components
 pdf_processor = PDFProcessor()
-cv_evaluator = CVEvaluator()
 db = Database()
 
 @app.on_event("startup")
@@ -105,7 +104,7 @@ async def evaluate_candidates(job_id: str):
         # Start evaluation process
         evaluation_results = []
         for cv in cvs:
-            result = await cv_evaluator.evaluate_cv(job_data['text'], cv['text'])
+            result = await evaluate_cv(job_data['text'], cv['text'])
             
             # Store evaluation result
             await db.store_evaluation(cv['id'], result)
